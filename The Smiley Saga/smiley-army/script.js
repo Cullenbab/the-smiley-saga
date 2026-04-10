@@ -1,0 +1,118 @@
+// Area info
+const gameArea = document.getElementById('game');
+if (!gameArea) {
+    throw new Error('Game area not found');
+};
+const ctx = gameArea.getContext('2d');
+if (!ctx) {
+    throw new Error('2D context not available');
+};
+gameArea.width = window.innerWidth;
+gameArea.height = window.innerHeight;
+
+// Instructions
+const info = document.getElementById('info');
+window.addEventListener('keydown', () => {
+    info.style.display = 'none';
+});
+window.addEventListener('click', () => {
+    info.style.display = 'none';
+});
+
+// Players info
+const nerd = {
+    x: gameArea.width / 2 - 25,
+    y: gameArea.height / 2 - 25,
+    width: 50,
+    height: 50,
+    img: new Image()
+};
+nerd.img.src = '../images/really-tuff-smiley-face.png';
+const players = [nerd];
+
+// Key states
+const keys = {
+    ArrowUp: false,
+    w: false,
+    ArrowDown: false,
+    s: false,
+    ArrowLeft: false,
+    a: false,
+    ArrowRight: false,
+    d: false,
+    ' ': false
+};
+
+// Event listeners for key presses
+window.addEventListener('keydown', (e) => {
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if (keys.hasOwnProperty(key)) {
+        keys[key] = true;
+    }
+});
+window.addEventListener('keyup', (e) => {
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if (keys.hasOwnProperty(key)) {
+        keys[key] = false;
+    }
+});
+
+// Resize canvas on window resize
+window.addEventListener('resize', () => {
+    gameArea.width = window.innerWidth;
+    gameArea.height = window.innerHeight;
+});
+
+// Soviet Saga
+if (Math.random() < 0.01) {
+    gameArea.style.backgroundImage = "url('../images/soviet-saga.png')";
+};
+
+
+// Main game loop
+function mainLoop() {
+    // Clear the canvas
+    ctx.clearRect(0, 0, gameArea.width, gameArea.height);
+
+    // Add new player if spacebar is pressed
+    if (keys[' ']) {
+        const newPlayer = {
+            x: players[0].x + Math.random() * ((players.length * 10) + 100) - ((players.length * 5) + 50) + players[0].width / 2,
+            y: players[0].y + Math.random() * ((players.length * 10) + 100) - ((players.length * 5) + 50) + players[0].height / 2,
+            width: 50,
+            height: 50,
+            img: new Image()
+        };
+        newPlayer.img.src = '../images/really-tuff-smiley-face.png';
+        players.push(newPlayer);
+        keys[' '] = false; // Make sure to only add one player per press
+    };
+
+    // Change each player's position and size aswell as draw them
+    for (let player of players) {
+        // Change players' position based on key presses
+        if (keys.ArrowUp || keys.w) player.y -= 5;
+        if (keys.ArrowDown || keys.s) player.y += 5;
+        if (keys.ArrowLeft || keys.a) player.x -= 5;
+        if (keys.ArrowRight || keys.d) player.x += 5;
+    
+        // Change players' size based on key presses
+        if ((keys.ArrowUp || keys.w) && (keys.ArrowDown || keys.s)) {
+         player.height++;
+         player.y -= 0.5;
+        };
+        if ((keys.ArrowLeft || keys.a) && (keys.ArrowRight || keys.d)) {
+         player.width++;
+         player.x -= 0.5;
+        };
+
+        // Draw the players
+        ctx.drawImage(player.img, player.x, player.y, player.width, player.height);
+    };
+
+    // Request the next frame
+    requestAnimationFrame(mainLoop);
+};
+
+// Run game
+mainLoop();

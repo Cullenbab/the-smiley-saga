@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+a {
+    display: block;
+}
+
+hr {
+    color: black;
+    height: 1px;
+    width: 70ch;
+    margin-left: 5px;
+}
+
+#game {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background-color: #eee;
+    margin: 0;
+    padding: 0;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
